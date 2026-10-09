@@ -1,4 +1,4 @@
-"""Demonstrate different runtime type behaviors in Python."""
+"""Demonstrate different runtime type behaviors in Python. (Dynamic, Strong)"""
 
 # Demonstrate different type behaviors
 print("1. int + string")
