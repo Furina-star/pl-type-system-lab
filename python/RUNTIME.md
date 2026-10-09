@@ -1,25 +1,26 @@
 # Python Runtime Documentation
 
 ## Environment
-- Version: [output of `python --version`]
-- Run command: `python main.py`
+- Interpreter: **Python 3.14.7**
+- Run from `python/`: `python main.py`
+- Version command: `python --version`
 
-## Type System
-- **Dynamic:** types are attached to values and checked while the program runs. A variable can be reassigned from `int` to `str` (test 2).
-- **Strong:** no silent conversion between unrelated types. `5 + "3"` raises a `TypeError` (tests 1 and 3).
+## Type system
+- **Dynamic:** Names can refer to values of different types. `v` is first bound to an integer and then to a string.
+- **Strong:** Python does not automatically turn `"3"` into an integer for addition with `5`, but it does support compatible mixed numeric arithmetic such as `5 + 2.5`.
 
-## Execution Strategy
-Source code is compiled to **bytecode** (`.pyc`) and executed by the **Python virtual machine** (CPython). There is no separate compile step for the user.
+## Execution strategy
+CPython internally compiles code to bytecode and executes it with its virtual machine. Imported modules may be cached as `.pyc` files, but the user does not need a separate compilation step or a `.pyc` file for the directly executed script.
 
 ## Results
 ![Python results](../screenshots/python-results.png)
 
-| Test | Result | Caught when? |
+| Test | Result | Explanation |
 |---|---|---|
-| 1. `5 + "3"` | `TypeError` | Runtime |
-| 2. Reassign int to str | Allowed | n/a |
-| 3. `add_one("a")` | `TypeError` | Runtime |
-| 4. `5 + 2.5` | `7.5` | n/a (numeric promotion) |
+| `5 + "3"` | `TypeError` | Invalid integer/string addition is detected at runtime. |
+| Reassign integer name to string | Allowed | The name is rebound; the original integer's type does not change. |
+| `add_one("a")` | `TypeError` | Function call is accepted, but `n + 1` fails when executed. |
+| `5 + 2.5` | `7.5` | Compatible mixed numeric arithmetic produces a float. |
 
 ## Observations
-The program ran line by line, so the output from the earlier tests printed before the error appeared. `5 + "3"` raised a `TypeError` at runtime instead of producing a value, which shows that Python is strongly typed. Reassigning `v` from an integer to a string worked without complaint, which shows that it is dynamically typed. I had to wrap the risky lines in `try/except` to let the program continue past the errors.
+The `try/except TypeError` blocks catch the two runtime failures so execution can continue. Dynamic typing allows name rebinding without implying that all combinations of values are valid. Strong typing here means Python does not silently convert strings to numbers for the illustrated addition, not that all implicit numeric conversions are forbidden.

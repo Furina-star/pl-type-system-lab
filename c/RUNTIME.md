@@ -1,26 +1,28 @@
 # C Runtime Documentation
 
 ## Environment
-- Compiler: [first line of `gcc --version`]
-- Compile: `gcc main.c -o main`
-- Run: `.\main`
+- Compiler: **gcc (Rev4, Built by MSYS2 project) 16.2.0**
+- Platform: Windows, MSYS2 toolchain
+- Compile from `c/`: `gcc main.c -o main`
+- Run in PowerShell: `.\main.exe`
+- Optional warnings: `gcc -Wall -Wextra -Wconversion main.c -o main`
 
-## Type System
-- **Static:** every variable has a type fixed at compile time (`int`, `char`) and the compiler checks it before the program runs.
-- **Weak:** the compiler silently converts between types. A `char` is treated as an integer, and a `double` is truncated when assigned or passed to an `int`.
+## Type system
+- **Static:** Variables have declared types known before execution. Assigning `'A'` to an `int` variable does not change that variable's type.
+- **Conventionally weak:** C permits many implicit arithmetic conversions. A compiler may warn about lossy conversions when appropriate warning flags are enabled, so this is not the same as lacking compile-time type checking.
 
-## Execution Strategy
-**Ahead-of-time (AOT) compilation.** gcc translates the source into a native machine-code executable (`main.exe`). The program runs directly on the CPU with no VM or interpreter.
+## Execution strategy
+GCC compiles the source ahead of time into native machine code. The resulting executable runs without a language interpreter or virtual machine.
 
 ## Results
 ![C results](../screenshots/c-results.png)
 
-| Test | Result | Why |
+| Test | Result | Explanation |
 |---|---|---|
-| 1. `5 + '3'` | `56` | `'3'` is the number 51 |
-| 2. `v = 'A'` | `65` | char converted to int |
-| 3. `add_one(3.9)` | `5` | 3.9 truncated to 3, then +1 |
-| 4. `int r = 5 + 2.5` | `7` | 7.5 truncated on assignment |
+| `5 + '3'` | `56` | `'3'` is a character, **not** the string `"3"`. On this ASCII-based system it has the code 51, promoted for addition. |
+| `v = 'A'` where `v` is `int` | `65` | `'A'` has code 65 on this system; `v` remains an integer variable. |
+| `add_one(3.9)` | `4` | Conversion to the function's `int` parameter changes 3.9 to 3; the function adds 1. |
+| `int r = 5 + 2.5` | `7` | The addition produces floating-point 7.5; the assignment to `int` truncates the fraction. |
 
 ## Observations
-The program compiled and ran without any errors, but several values were silently changed. `5 + '3'` printed `56` because the character `'3'` is stored as the number 51. Passing `3.9` to `add_one` printed `4` because the decimal part was truncated, and `int r = 5 + 2.5` stored `7` instead of `7.5`. Types are fixed at compile time (static), yet the compiler converts between them without stopping me, which makes C weakly typed. The compiled executable ran directly without an interpreter or VM.
+C's compiler permits the implicit conversions demonstrated here. The character test differs from the string test in Python and JavaScript. The mixed numeric expression is evaluated as floating-point before an assignment conversion discards its fractional part. The program can compile and run despite potentially lossy conversions; `-Wconversion` can reveal additional diagnostics.

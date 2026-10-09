@@ -1,36 +1,35 @@
 # Rust Runtime Documentation
 
 ## Environment
-- Version: [output of `rustc --version`]
-- Compile and run (working version): `rustc main.rs` then `.\main`
-- Compile (failing version): `rustc error.rs`
+- Compiler: **rustc 1.98.1 (48a229cea 2026-09-01)**
+- Compile working version from `rust/`: `rustc main.rs`
+- Run in PowerShell: `.\main.exe`
+- Compile error demonstration: `rustc error.rs` (expected failure)
 
-## Type System
-- **Static:** types are checked at compile time. A variable inferred as an integer can't later hold a string (test 2).
-- **Strong:** there are no implicit conversions, even between `i32` and `f64`. Conversions must be written explicitly (`as f64`, `.parse()`).
+## Type system
+- **Static:** Rust checks types before execution. `mut` permits reassignment to a compatible value; it does not let the variable change type.
+- **Strong:** Rust does not implicitly convert an `&str` to an integer or mix incompatible integer/float operand types. The working example uses explicit string parsing and numeric casting.
 
-## Execution Strategy
-**Ahead-of-time (AOT) compilation.** `rustc` type-checks the whole program, then produces a native executable. If any type check fails, **no executable is produced** and the program never runs.
+## Execution strategy
+Rust compiles ahead of time to native machine code. A compilation failure prevents a new executable from being generated from the failing source file; a previously compiled executable may still exist.
 
 ## Results
 
-### `error.rs` (rejected by the compiler)
-![Rust compile errors](../screenshots/rust-errors_a.png)
-![Rust compile errors](../screenshots/rust-errors_b.png)
+### `error.rs` (compile-time diagnostics)
+![Rust errors A](../screenshots/rust-errors_a.png)
+![Rust errors B](../screenshots/rust-errors_b.png)
 
-| Test | Error | Meaning |
+| Test | Error | Explanation |
 |---|---|---|
-| 1. `5 + "3"` | E0277 | No `Add` between integer and `&str` |
-| 2. `v = "hello"` | E0308 | Variable type can't change |
-| 3. `add_one("a")` | E0308 | Expected `i32`, found `&str` |
-| 4. `5 + 2.5` | E0277 | Can't add float to integer |
+| `5 + "3"` | E0277 | Integer and string slice cannot be added. |
+| `v = "hello"` after integer initialization | E0308 | Incompatible assignment to integer variable. |
+| `add_one("a")` | E0308 | Function expects `i32`, not `&str`. |
+| `5 + 2.5` | E0277 | Mixing inferred integer and floating-point values in this operation is unsupported. |
 
-All four errors were reported together at compile time.
-
-### `main.rs` (corrected version)
+### `main.rs` (corrected program)
 ![Rust results](../screenshots/rust-results.png)
 
-The same four ideas compile only when every conversion is explicit, and the output is `8`, `10`, `20`, `5`, `7.5`.
+The program parses `"3"` as `i32` to produce `8`, reassigns the mutable integer from `10` to `20`, calls `add_one(4)` to produce `5`, and casts the integer to `f64` before adding `2.5` to produce `7.5`.
 
 ## Observations
-`error.rs` failed to compile, so no executable was created and the program never ran. All four mistakes were reported together before execution, which shows that Rust checks types statically. It also refused to mix an integer with a float or a string, so Rust is strongly typed. To fix the program (`main.rs`), I had to write every conversion explicitly, such as `"3".parse()` and `x as f64`. Compared to the other languages, Rust moves bugs from runtime to compile time.
+The invalid examples are rejected *before execution*, while valid explicit conversions compile. Rust cannot prevent every runtime failure: `.parse().unwrap()` can panic if parsing fails. The examples distinguish compiler diagnostics from runtime behavior.
