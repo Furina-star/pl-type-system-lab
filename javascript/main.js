@@ -1,5 +1,8 @@
 /* Demonstrate different runtime type behaviors in JavaScript. (Dynamic, Weak) */
 
+function addOne(n) {
+  return n + 1;
+}
 
 // Demonstrate type coercion in JavaScript
 console.log("1. int + string");
@@ -14,9 +17,6 @@ v = "hello";
 console.log("  ", v, typeof v);
 
 // Demonstrate function with wrong type
-function addOne(n) {
-  return n + 1;
-}
 console.log("3. function with wrong type");
 console.log("  ", addOne(4));
 console.log("  ", addOne("a"));

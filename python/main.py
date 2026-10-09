@@ -1,6 +1,9 @@
 """Demonstrate different runtime type behaviors in Python. (Dynamic, Strong)"""
 
-# Demonstrate different type behaviors
+def add_one(n):
+    return n + 1
+
+# Demonstrate type coercion
 print("1. int + string")
 try:
     print(5+"3")
@@ -15,8 +18,6 @@ v = "hello"
 print("  ", v, type(v).__name__)
 
 # Demonstrate function with wrong type
-def add_one(n):
-    return n + 1
 print("3. function with wrong type")
 print("  ", add_one(4))
 try:
