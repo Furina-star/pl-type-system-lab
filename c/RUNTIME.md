@@ -23,4 +23,4 @@
 | 4. `int r = 5 + 2.5` | `7` | 7.5 truncated on assignment |
 
 ## Observations
-The program compiled and ran without any errors, but several values were silently changed. `5 + '3'` printed `56` because the character `'3'` is stored as the number 51. Passing `3.9` to `add_one` printed `5` because the decimal part was truncated, and `int r = 5 + 2.5` stored `7` instead of `7.5`. Types are fixed at compile time (static), yet the compiler converts between them without stopping me, which makes C weakly typed. The compiled executable ran directly without an interpreter or VM.
+The program compiled and ran without any errors, but several values were silently changed. `5 + '3'` printed `56` because the character `'3'` is stored as the number 51. Passing `3.9` to `add_one` printed `4` because the decimal part was truncated, and `int r = 5 + 2.5` stored `7` instead of `7.5`. Types are fixed at compile time (static), yet the compiler converts between them without stopping me, which makes C weakly typed. The compiled executable ran directly without an interpreter or VM.
